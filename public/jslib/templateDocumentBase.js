@@ -155,8 +155,6 @@ define(["dojo/_base/declare", "dijit/layout/BorderContainer", "dijit/layout/Layo
                     parent.appendChild(labelTag);
                 }
                 var tag = document.createElement("input");
-                //tag.marginLeft="0px";
-                //tag.paddingLeft="0px";
                 //if (label) labelTag.setAttribute("for",tag.getAttribute("id"));
                 parent.appendChild(tag);
                 return tag;
@@ -177,16 +175,30 @@ define(["dojo/_base/declare", "dijit/layout/BorderContainer", "dijit/layout/Layo
             /*
              * params= {labelText,labelStyle, inputStyle, cellWidth,cellStyle, initValueDate, inputParams}
              */
-            addTableCellDateBoxTo: function(tableRowNode, params){
+            addTableCellDateBoxTo: function(tableRowNode, params){ console.log("params=",params);
+                params.labelText= "с";
                 if (!params) params={};
+                //if (params.labelText) {
+                //    var labelTableCell = this.addLeftCellToTableRow(tableRowNode, 20);
+                //    labelTableCell.style.textAlign='right';
+                //    labelTableCell.innerText = params.labelText + " ";
+                //    if (params.labelStyle) labelTableCell.setAttribute("style", params.labelStyle);
+                //}
+
                 var tableCell = this.addLeftCellToTableRow(tableRowNode, params.cellWidth, params.cellStyle);
                 var inputDateBox= this.createInputTo(tableCell, params.labelText, params.labelStyle);
+
                 var dateBoxParams={};
                 if (params.inputParams) dateBoxParams=params.inputParams;
                 if (params.initValueDate!==undefined) dateBoxParams.value= params.initValueDate;
                 dateBoxParams.style= "width:85px";
                 if (params.inputStyle) dateBoxParams.style=params.inputStyle;
-                return new DateTextBox(dateBoxParams,inputDateBox);
+                var dateTextBox=new DateTextBox(dateBoxParams,inputDateBox);
+                console.log("tableCell.lastChild 197=",tableCell.lastChild.domNode);
+                this.addPreviousDayBtn(tableCell,dateTextBox);
+                this.addNextDayBtn(tableCell,dateTextBox);
+
+                return  dateTextBox;
             },
             /*
              * params= {cellWidth, cellStyle, labelText, labelStyle, inputParam, inputStyle, initValues}
@@ -306,52 +318,87 @@ define(["dojo/_base/declare", "dijit/layout/BorderContainer", "dijit/layout/Layo
                 };
             },
 
-            addPreviousDayBtn:function(inputDateBox,tableRow){
+            //addPreviousDayBtn:function(inputDateBox,tableRow){
+            //    var previousDayBtn = document.createElement('BUTTON');
+            //    previousDayBtn.setAttribute("id","previousDayBtnFor"+inputDateBox.id);
+            //    previousDayBtn.className = "changeType";
+            //    previousDayBtn.style.width = "18px";
+            //    previousDayBtn.style.height = "18px";
+            //    previousDayBtn.style.floaght = "right";
+            //    previousDayBtn.style.marginBottom = "3px";
+            //    previousDayBtn.style.marginRight = "0px";
+            //    previousDayBtn.innerText= "\u25c4";
+            //    var tableCell=document.createElement("td");
+            //    tableCell.setAttribute("style", "white-space:nowrap; padding:0px; margin:0px; align:right;");
+            //    tableCell.setAttribute("width", "20px");
+            //    tableRow.insertBefore(tableCell, inputDateBox.domNode.parentNode);
+            //    tableCell.appendChild(previousDayBtn);
+            //
+            //    previousDayBtn.onclick=function(){
+            //        var newDate=moment(new Date(inputDateBox.value)).subtract(1, 'days');
+            //        console.log("newDate=",newDate);
+            //        inputDateBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
+            //    };
+            //},
+            //
+            //addNextDayBtn:function(inputDateBox,tableRow){
+            //    var nextDayBtn = document.createElement('BUTTON');
+            //    nextDayBtn.setAttribute("id","nextDayBtn"+inputDateBox.id);
+            //    nextDayBtn.className = "changeType";
+            //    nextDayBtn.style.width = "18px";
+            //    nextDayBtn.style.height = "18px";
+            //    nextDayBtn.style.marginBottom = "3px";
+            //    nextDayBtn.style.marginLeft = "0px";
+            //    nextDayBtn.innerText= "\u25ba";
+            //    var tableCell=document.createElement("td");
+            //    tableCell.setAttribute("style", "white-space:nowrap; padding:0px;  ");
+            //    tableCell.setAttribute("width", "20px");
+            //   var nexElement=inputDateBox.domNode.parentNode.nextSibling;
+            //    if(nexElement){
+            //        tableRow.insertBefore(tableCell, nexElement);
+            //    }else{
+            //        tableRow.appendChild(tableCell);
+            //    }
+            //    tableCell.appendChild(nextDayBtn);
+            //    nextDayBtn.onclick=function(){
+            //        var newDate=moment(new Date(inputDateBox.value)).add(1, 'days');
+            //        console.log("newDate=",newDate);
+            //        inputDateBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
+            //    };
+            //}
+
+            addPreviousDayBtn:function(tableCell,dateTextBox){
                 var previousDayBtn = document.createElement('BUTTON');
-                previousDayBtn.setAttribute("id","previousDayBtnFor"+inputDateBox.id);
-                previousDayBtn.className = "changeType";
+                previousDayBtn.setAttribute("id","previousDayBtnFor"+dateTextBox.id);
+                previousDayBtn.className = "dijitReset dijitButtonNode";
                 previousDayBtn.style.width = "18px";
                 previousDayBtn.style.height = "18px";
-                previousDayBtn.style.floaght = "right";
-                previousDayBtn.style.marginBottom = "3px";
-                previousDayBtn.style.marginRight = "0px";
+                previousDayBtn.style.border="solid 1px #b5bcc7";
+                previousDayBtn.style.color="#b5bcc7";
                 previousDayBtn.innerText= "\u25c4";
-                var tableCell=document.createElement("td");
-                tableCell.setAttribute("style", "white-space:nowrap; padding:0px; margin:0px; align:right;");
-                tableCell.setAttribute("width", "20px");
-                tableRow.insertBefore(tableCell, inputDateBox.domNode.parentNode);
-                tableCell.appendChild(previousDayBtn);
-
+                console.log("tableCell.lastChild=",tableCell.lastChild);
+                tableCell.insertBefore(previousDayBtn, tableCell.lastChild);
                 previousDayBtn.onclick=function(){
-                    var newDate=moment(new Date(inputDateBox.value)).subtract(1, 'days');
+                    var newDate=moment(new Date(dateTextBox.value)).subtract(1, 'days');
                     console.log("newDate=",newDate);
-                    inputDateBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
+                    dateTextBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
                 };
             },
 
-            addNextDayBtn:function(inputDateBox,tableRow){
+            addNextDayBtn:function(tableCell,dateTextBox){
                 var nextDayBtn = document.createElement('BUTTON');
-                nextDayBtn.setAttribute("id","nextDayBtn"+inputDateBox.id);
-                nextDayBtn.className = "changeType";
+                nextDayBtn.setAttribute("id","nextDayBtn"+dateTextBox.id);
+                nextDayBtn.className = "dijitReset dijitButtonNode";
                 nextDayBtn.style.width = "18px";
                 nextDayBtn.style.height = "18px";
-                nextDayBtn.style.marginBottom = "3px";
-                nextDayBtn.style.marginLeft = "0px";
+                nextDayBtn.style.border="solid 1px #b5bcc7";
+                nextDayBtn.style.color="#b5bcc7";
                 nextDayBtn.innerText= "\u25ba";
-                var tableCell=document.createElement("td");
-                tableCell.setAttribute("style", "white-space:nowrap; padding:0px;  ");
-                tableCell.setAttribute("width", "20px");
-               var nexElement=inputDateBox.domNode.parentNode.nextSibling;
-                if(nexElement){
-                    tableRow.insertBefore(tableCell, nexElement);
-                }else{
-                    tableRow.appendChild(tableCell);
-                }
                 tableCell.appendChild(nextDayBtn);
                 nextDayBtn.onclick=function(){
-                    var newDate=moment(new Date(inputDateBox.value)).add(1, 'days');
+                    var newDate=moment(new Date(dateTextBox.value)).add(1, 'days');
                     console.log("newDate=",newDate);
-                    inputDateBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
+                    dateTextBox.set("displayedValue",newDate.format("DD.MM.YYYY"));
                 };
             }
         })
