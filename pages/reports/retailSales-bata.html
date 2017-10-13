@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="sales_retail_PageContainer" style="width:100%;height:100%;">
+    <div id="sales_retail_ContentPaneLeft" style="width:185px;height:100%; margin:0;padding:0;">
+        <table style="width:100%; margin:0;padding:0;">
+            <tr><th height="20px;">Отчеты</th></tr>
+            <tr><td>
+                <button id="sales_retail_Btn_SalesRetail">Продажи по чекам</button>
+                <button id="sales_retail_Btn_SalesByDays">Продажи по дням</button>
+                <br><br>
+                <button id="sales_retail_Btn_SalesRetailExt">Продажи по чекам с атрибутами</button>
+                <br><br>
+                <button id="sales_retail_Btn_SalesByArticles">Продажи по артикулам</button>
+                <button id="sales_retail_Btn_SalesByCollections">Продажи по коллекциям</button>
+                <button id="sales_retail_Btn_SalesByBataAttributes">Продажи по атрибутам Bata</button>
+                <br><br>
+                <button id="sales_retail_Btn_CashReport">Кассовый лист</button>
+            </td></tr>
+        </table>
+    </div>
+    <div id="sales_retail_ContentPaneDetailContainer" style="width:100%;height:100%; margin:0;padding:0;"></div>
+</div>
+</body>
+<script type="text/javascript">
+    require(["app", "dojo/dom-style", "dijit/layout/BorderContainer", "dijit/layout/StackContainer", "dijit/layout/ContentPane",
+                "dijit/form/Button", "templateDocumentSimpleTable"],
+            function (APP, domStyle, BorderContainer, StackContainer, ContentPane, Button, TDocumentSimpleTable) {
+                var sales_retail_PageContainer=
+                        APP.instanceForID("sales_retail_PageContainer", BorderContainer, {});
+                APP.instanceForID("sales_retail_ContentPaneLeft", ContentPane, {region:'left', splitter:true});
+                var sales_retail_Btn_SalesRetail=
+                        APP.instanceForID("sales_retail_Btn_SalesRetail", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesRetail", "width", "170px");
+                var sales_retail_Btn_SalesByDays=
+                        APP.instanceForID("sales_retail_Btn_SalesByDays", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesByDays", "width", "170px");
+                var sales_retail_Btn_SalesRetailExt=
+                        APP.instanceForID("sales_retail_Btn_SalesRetailExt", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesRetailExt", "width", "170px");
+                var sales_retail_Btn_SalesByArticles=
+                        APP.instanceForID("sales_retail_Btn_SalesByArticles", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesByArticles", "width", "170px");
+                var sales_retail_Btn_SalesByCollections=
+                    APP.instanceForID("sales_retail_Btn_SalesByCollections", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesByCollections", "width", "170px");
+                var sales_retail_Btn_SalesByBataAttributes=
+                        APP.instanceForID("sales_retail_Btn_SalesByBataAttributes", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_SalesByBataAttributes", "width", "170px");
+                var sales_retail_Btn_CashReport=
+                        APP.instanceForID("sales_retail_Btn_CashReport", Button, {style:"width:100px"});
+                domStyle.set("sales_retail_Btn_CashReport", "width", "170px");
+                var sales_retail_ContentPaneDetailContainer=
+                        APP.instanceForID("sales_retail_ContentPaneDetailContainer", StackContainer, {region:'center'});
+
+                sales_retail_Btn_SalesRetail.onClick= function(){
+                    if (!sales_retail_Btn_SalesRetail.document){
+                        sales_retail_Btn_SalesRetail.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesRetail",
+                                        TDocumentSimpleTable, {titleText:"Продажи чекам", dataURL:"/reports/retailSales/getRetailSales"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 130, {style:"font-weight:bold;",inputStyle:"width:40px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 930, "QTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 200, "POSSUM", {style:"font-weight:bold;",inputStyle:"width:80px",pattern:"###,###,##0.00######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesRetail.document);
+                };
+                sales_retail_Btn_SalesByDays.onClick= function(){
+                    if (!sales_retail_Btn_SalesByDays.document){
+                        sales_retail_Btn_SalesByDays.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesByDays",
+                                        TDocumentSimpleTable, {titleText:"Продажи по дням", dataURL:"/reports/retailSales/getSalesByDates"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 140, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 445, "QTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 200, "POSSUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesByDays.document);
+                };
+                sales_retail_Btn_SalesRetailExt.onClick= function(){
+                    if (!sales_retail_Btn_SalesRetailExt.document){
+                        sales_retail_Btn_SalesRetailExt.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesRetailExt",
+                                        TDocumentSimpleTable, {titleText:"Продажи чекам с атрибутами", dataURL:"/reports/retailSales/getRetailSalesExt"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 130, {style:"font-weight:bold;",inputStyle:"width:40px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 930, "QTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 200, "POSSUM", {style:"font-weight:bold;",inputStyle:"width:80px",pattern:"###,###,##0.00######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesRetailExt.document);
+                };
+                sales_retail_Btn_SalesByArticles.onClick= function(){
+                    if (!sales_retail_Btn_SalesByArticles.document){
+                        sales_retail_Btn_SalesByArticles.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesByArticles",
+                                        TDocumentSimpleTable, {titleText:"Продажи по артикулам", dataURL:"/reports/retailSales/getSalesByArticles"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 140, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 210, "SQTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 200, "SPOSSUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesByArticles.document);
+                };
+                sales_retail_Btn_SalesByCollections.onClick= function(){
+                    if (!sales_retail_Btn_SalesByCollections.document){
+                        sales_retail_Btn_SalesByCollections.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesByCollections",
+                                        TDocumentSimpleTable, {titleText:"Продажи по коллекциям", dataURL:"/reports/retailSales/get_sales_by_collections"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 140, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 310, "SQTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 220, "SPOSSUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesByCollections.document);
+                };
+                sales_retail_Btn_SalesByBataAttributes.onClick= function(){
+                    if (!sales_retail_Btn_SalesByBataAttributes.document){
+                        sales_retail_Btn_SalesByBataAttributes.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableSalesByBataAttributes",
+                                        TDocumentSimpleTable, {titleText:"Продажи по атрибутам Bata", dataURL:"/reports/retailSales/getSalesByBataAttributes"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addTotalCountNumberBox("ИТОГО строк:", 140, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:", 710, "SQTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:", 220, "SPOSSUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_SalesByBataAttributes.document);
+                };
+                sales_retail_Btn_CashReport.onClick= function(){
+                    if (!sales_retail_Btn_CashReport.document){
+                        sales_retail_Btn_CashReport.document =
+                                APP.childFor(sales_retail_ContentPaneDetailContainer, "sales_retail_TableCashreport",
+                                        TDocumentSimpleTable, {titleText:"Кассовый лист", dataURL:"/reports/retailCashier/getCashReport"})
+                                        .addBeginDateBox("с","DOCDATE>=", {initValueDate:"curMonthBDate"}).addEndDateBox("по","DOCDATE<=")
+                                        .addBtnPrint(550).addTotalEmpty()
+                                        .addTotalSumNumberTextBox("Кол-во реализации:", 255, "SALE_QTY", {inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("Сумма реализации:", 230, "SALE_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalSumNumberTextBox("Сумма реализации наличными:", 310, "SALE_CASH_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalRow().addTotalEmpty().addTotalEmpty().addTotalEmpty()
+                                        .addTotalSumNumberTextBox("Сумма реализации плат.карты:", 310, "SALE_CARD_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalRow().addTotalEmpty()
+                                        .addTotalSumNumberTextBox("Кол-во возвратов:", 255, "SALE_RET_QTY", {inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("Сумма возвратов:", 230, "SALE_RET_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalSumNumberTextBox("Сумма возвратов наличными:", 310, "SALE_RET_CASH_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalRow().addTotalEmpty().addTotalEmpty().addTotalEmpty()
+                                        .addTotalSumNumberTextBox("Сумма возвратов по плат.картам:", 310, "SALE_RET_CARD_SUM", {inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalRow()
+                                        .addTotalCountNumberBox("ИТОГО строк:", 140, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                        .addTotalSumNumberTextBox("ИТОГО кол-во:",0, "QTY", {style:"font-weight:bold;",inputStyle:"width:60px"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма:",0, "POSSUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalSumNumberTextBox("ИТОГО сумма наличными:", 0, "CASH_SUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .addTotalRow().addTotalEmpty().addTotalEmpty().addTotalEmpty()
+                                        .addTotalSumNumberTextBox("ИТОГО сумма плат.карты:", 0, "CARD_SUM", {style:"font-weight:bold;",inputStyle:"width:90px",pattern:"###,###,##0.00#######"})
+                                        .startUp();
+                    }
+                    sales_retail_ContentPaneDetailContainer.selectChild(sales_retail_Btn_CashReport.document);
+                };
+
+                sales_retail_PageContainer.layout();
+                sales_retail_Btn_SalesRetail.onClick();
+        });
+</script>
+</html>

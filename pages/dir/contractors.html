@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="dir_contractors_PageContainer" style="width: 100%; height: 100%;">
+    <div id="dir_contractors_ContentContainer" style="width:100%;height:100%; margin:0;padding:0;"></div>
+</div>
+</body>
+<script type="text/javascript">
+    require(["app", "dijit/layout/BorderContainer", "dijit/layout/StackContainer", "templateDocumentSimpleTableEditable"],
+            function (APP, BorderContainer, StackContainer, TDocumentSimpleTableEditable) {
+                var dir_contractors_PageContainer=
+                        APP.instanceForID("dir_contractors_PageContainer", BorderContainer, {});
+                var dir_contractors_ContentContainer=
+                        APP.instanceForID("dir_contractors_ContentContainer", StackContainer, {region:'center'});
+
+                dir_contractors_ContentContainer.docDirContractors =
+                        APP.childFor(dir_contractors_ContentContainer, "dir_contractors_TableDirContractors",
+                                TDocumentSimpleTableEditable, {titleText:"Контрагенты", rightPane:true, rightPaneWidth:150,
+                                    dataURL:"/dir/contractors/getDataForDirContractorsTable",
+                                    dataNewURL:"/dir/contractors/newDataForDirContractorsTable",
+                                    dataStoreURL:"/dir/contractors/storeDirContractorsTableData", dataDeleteURL:"/dir/contractors/deleteDirContractorsTableData"})
+                                .addCheckBtnCondition(120,"Поставщики",{"IS_SUPPLIER~":"1"})
+                                .addCheckBtnCondition(120,"Покупатели",{"IS_BUYER~":"1"})
+                                .addCheckBtnCondition(150,"Прочие",{"IS_SUPPLIER~":"0","IS_BUYER~":"0"})
+                                .addTotalCountNumberBox("ИТОГО строк:", 150, {style:"font-weight:bold;",inputStyle:"width:50px"})
+                                .addToolPane("Действия")
+                                .addToolPaneTableActionButton("Добавить", {btnStyle:"width:115px;", actionName:"insertTableRow"})
+                                .addToolPaneTableActionButton("Изменить", {btnStyle:"width:115px;", actionName:"allowEditTableSelectedRow"})
+                                .addToolPaneTableActionButton("Сохранить", {btnStyle:"width:115px;", actionName:"storeTableSelectedRow"})
+                                .addToolPaneTableActionButton("Удалить", {btnStyle:"width:115px;", actionName:"deleteTableSelectedRow"})
+                                .addContentTablePopupMenuTableRowsAction("Добавить строки",{actionName:"insertTableRowsAfterSelected",rowPosName:"POS"})//rowPosIndexName:"POSIND"
+                                .addContentTablePopupMenuTableRowsAction("Изменить строки",{actionName:"allowEditTableSelectedRows"})
+                                .addContentTablePopupMenuTableRowsAction("Сохранить строки",{actionName:"storeTableSelectedRows"})
+                                .addContentTableRowChangeCallback(function(changedRowData, contentTable, params, nextCallback){
+                                   // changedRowData.item("NOT_USED").setValue(0);
+                                    nextCallback();
+                                })
+                                .startUp();
+                dir_contractors_PageContainer.layout();
+            })
+</script>
+</html>
